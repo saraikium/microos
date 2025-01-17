@@ -29,17 +29,20 @@ void putchar(char ch) {
   sbi_call(ch, 0, 0, 0, 0, 0, 0, 1 /* Console Putchar */);
 }
 
-void kernel_main(void) {
-  printf("\n\nHello %s\n", "World!");
-  PANIC("booted!");
-  printf("Unreachavle]n");
-}
-
 __attribute__((section(".text.boot"))) __attribute__((naked)) void boot(void) {
   __asm__ __volatile__("mv sp, %[stack_top]\n"
                        "j kernel_main\n"
                        :
                        : [stack_top] "r"(__stack_top));
+}
+
+void handle_trap(struct trap_frame *f) {
+  uint32_t scause = READ_CSR(scause);
+  uint32_t stval = READ_CSR(stval);
+  uint32_t user_pc = READ_CSR(sepc);
+
+  PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval,
+        user_pc);
 }
 
 __attribute__((naked)) __attribute__((aligned(4))) void kernel_entry(void) {
@@ -114,4 +117,10 @@ __attribute__((naked)) __attribute__((aligned(4))) void kernel_entry(void) {
                        "lw s11, 4 * 29(sp)\n"
                        "lw sp,  4 * 30(sp)\n"
                        "sret\n");
+}
+
+void kernel_main(void) {
+  memset(__bss, 0, (size_t)__bss_end - (size_t)__bss);
+  WRITE_CSR(stvec, (uint32_t)kernel_entry);
+  __asm__ __volatile__("unimp");
 }
