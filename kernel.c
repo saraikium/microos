@@ -80,10 +80,9 @@ __attribute__((section(".text.boot"))) __attribute__((naked)) void boot(void) {
  */
 void handle_trap(struct trap_frame *f) {
   // Read trap-related control and status registers
-  uint32_t scause = READ_CSR(scause); ///< Trap cause
-  uint32_t stval = READ_CSR(stval);   ///< Faulting address or value
-  uint32_t user_pc =
-      READ_CSR(sepc); ///< Program counter at the time of the trap
+  uint32_t scause = READ_CSR(scause); //< Trap cause
+  uint32_t stval = READ_CSR(stval);   //< Faulting address or value
+  uint32_t user_pc = READ_CSR(sepc); //< Program counter at the time of the trap
 
   // Print panic message and trap diagnostics
   PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval,
