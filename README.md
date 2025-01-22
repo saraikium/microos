@@ -1,3 +1,6 @@
+# MircoOs
+MicroOs is a small operating system written for 32 bit RISC-V achitecture. 
+
 # Setup
 1- Install required dependencies
 ## MacOS
@@ -24,3 +27,6 @@ C-a b    send break (magic sysrq)
 C-a c    switch between console and monitor
 C-a C-a  sends C-a
 ```
+
+# License
+- MIT
