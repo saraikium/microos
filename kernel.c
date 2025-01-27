@@ -167,13 +167,13 @@ struct process *create_process(uint32_t pc) {
   // the first context switch in switch_context.
   uint32_t *sp = (uint32_t *)&proc->stack[sizeof(proc->stack)];
   for (int i = 0; i < 12; i++) {
-    *--sp = 0; // Zero out the s11 to s0
+    *--sp = 0; // Zero out the s11 to s0 (Callee-saved registers)
   }
   *--sp = (uint32_t)pc;
 
   proc->pid = i + 1;
   proc->state = PROC_RUNNABLE;
-  proc->sp = (uint32_t)sp;
+  proc->sp = (uint32_t)sp; // 
 
   return proc;
 };
