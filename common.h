@@ -45,8 +45,9 @@ void printf(const char *fmt, ...);
 #define PROC_RUNNABLE 1 // Runnable process
 
 struct process {
-  int pid;             // Process ID
-  int state;           // Process state: PROC_UNUSED or PROC_RUNNABLE
-  vaddr_t sp;          // Stack pointer
+  int pid;    // Process ID
+  int state;  // Process state: PROC_UNUSED or PROC_RUNNABLE
+  vaddr_t sp; // Stack pointer
+  uint32_t *page_table;
   uint8_t stack[8192]; // Kernel stack, 8KB size
 };
