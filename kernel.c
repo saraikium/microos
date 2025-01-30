@@ -200,7 +200,8 @@ struct process *create_process(uint32_t pc) {
 
   proc->pid = i + 1;
   proc->state = PROC_RUNNABLE;
-  proc->sp = (uint32_t)sp; //
+  proc->sp = (uint32_t)sp;
+  proc->page_table = page_table;
 
   return proc;
 };
@@ -315,18 +316,20 @@ void yield(void) {
   if (next == current_proc)
     return;
 
+  // Context switch
+  struct process *prev = current_proc;
+  current_proc = next;
+
   __asm__ __volatile__(
       "sfence.vma\n"
       "csrw satp, %[satp]\n"
       "sfence.vma\n"
       "csrw sscratch, %[sscratch]\n"
       :
+      // Don't forget the trailing comma!
       : [satp] "r"(SATP_SV32 | ((uint32_t)next->page_table / PAGE_SIZE)),
         [sscratch] "r"((uint32_t)&next->stack[sizeof(next->stack)]));
 
-  // Context switch
-  struct process *prev = current_proc;
-  current_proc = next;
   switch_context(&prev->sp, &next->sp);
 }
 
