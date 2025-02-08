@@ -326,7 +326,6 @@ void yield(void) {
       "sfence.vma\n"
       "csrw sscratch, %[sscratch]\n"
       :
-      // Don't forget the trailing comma!
       : [satp] "r"(SATP_SV32 | ((uint32_t)next->page_table / PAGE_SIZE)),
         [sscratch] "r"((uint32_t)&next->stack[sizeof(next->stack)]));
 
